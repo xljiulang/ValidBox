@@ -1,10 +1,7 @@
-### ValidBox语法
 ####Fluent Api风格
-
 ``@Html.TextBoxFor(item => item.Name, Html.Valid().Required("名称为必填项").Length(2, 4).Remote("/home/CheckName", "Id", "Name").AsHtmlAttribute())``
 
 ####打特性风格
-
 public class UserInfo
     {
         [Required]

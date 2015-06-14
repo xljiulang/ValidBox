@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.Mvc.Html;
+using MVC = System.ComponentModel.DataAnnotations;
 
 namespace ValidBox4Mvc.ValidRules
 {
@@ -12,7 +13,7 @@ namespace ValidBox4Mvc.ValidRules
     /// maxLength参数会影响EF-CodeFirst生成的数据库字段最大长度
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class LengthAttribute : System.ComponentModel.DataAnnotations.StringLengthAttribute, IValidRule
+    public class LengthAttribute : MVC.StringLengthAttribute, IValidRule
     {
         /// <summary>
         /// 排序索引
@@ -36,10 +37,9 @@ namespace ValidBox4Mvc.ValidRules
         /// <param name="minLength">最小长度</param>
         /// <param name="maxLength">最大长度</param>
         public LengthAttribute(int minLength, int maxLength)
-            : base(maxLength)
+            : this(maxLength)
         {
             this.MinimumLength = minLength;
-            this.OrderIndex = 1;
             this.ErrorMessage = "长度必须介于{0}到{1}个字";
         }
 
@@ -49,8 +49,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public ValidBox ToValidBox()
         {
-            var validType = "length" + ValidBox.MakeJsArray(this.MinimumLength, this.MaximumLength);
-            return new ValidBox(validType, this.ErrorMessage);
+            return new ValidBox("length", this.ErrorMessage, this.MinimumLength, this.MaximumLength);
         }
 
         /// <summary>

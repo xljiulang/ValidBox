@@ -14,30 +14,30 @@ namespace ValidBox4Mvc.ValidRules
     public class MatchAttribute : ValidRuleBase
     {
         /// <summary>
-        /// 正则表达式
+        /// 获取或设置正则表达式
         /// </summary>
-        public string RegParam { get; set; }
+        protected string RegexPattern { get; set; }
 
         /// <summary>
         /// 验证是否和正则表达式匹配
         /// </summary>
-        /// <param name="regParam">正则表达式</param>
-        public MatchAttribute(string regParam)
+        /// <param name="pattern">正则表达式</param>
+        public MatchAttribute(string pattern)
         {
-            this.RegParam = regParam;
+            this.RegexPattern = pattern;
             this.OrderIndex = 1;
             this.ErrorMessage = "请输入正确的值";
         }
 
         /// <summary>
-        /// 生成验证框
+        /// 转换为对应的ValidBox类型
         /// </summary>
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.RegParam.Replace(@"\", @"\\"));
-            return new ValidBox(validType, this.ErrorMessage);
+            return new ValidBox(this.ValidType, this.ErrorMessage, this.RegexPattern);
         }
+ 
 
         /// <summary>
         /// 后台验证
@@ -49,7 +49,7 @@ namespace ValidBox4Mvc.ValidRules
             string currentValue;
             if (base.HasStringValue(value, out currentValue))
             {
-                return Regex.IsMatch(currentValue, this.RegParam);
+                return Regex.IsMatch(currentValue, this.RegexPattern);
             }
             return true;
         }

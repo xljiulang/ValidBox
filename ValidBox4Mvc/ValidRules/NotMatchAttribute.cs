@@ -11,32 +11,15 @@ namespace ValidBox4Mvc.ValidRules
     /// 表示验证不要和正则表达式匹配
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class NotMatchAttribute : ValidRuleBase
+    public class NotMatchAttribute : MatchAttribute
     {
-        /// <summary>
-        /// 正则表达式
-        /// </summary>
-        public string RegParam { get; set; }
-
         /// <summary>
         /// 验证不要和正则表达式匹配
         /// </summary>
-        /// <param name="regParam">正则表达式</param>
-        public NotMatchAttribute(string regParam)
+        /// <param name="pattern">正则表达式</param>
+        public NotMatchAttribute(string pattern)
+            : base(pattern)
         {
-            this.RegParam = regParam;
-            this.OrderIndex = 1;
-            this.ErrorMessage = "请输入正确的值";
-        }
-
-        /// <summary>
-        /// 生成验证框对象
-        /// </summary>
-        /// <returns></returns>
-        public override ValidBox ToValidBox()
-        {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.RegParam.Replace(@"\", @"\\"));
-            return new ValidBox(validType, this.ErrorMessage);
         }
 
         /// <summary>
@@ -46,12 +29,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-            string currentValue;
-            if (base.HasStringValue(value, out currentValue))
-            {
-                return !Regex.IsMatch(currentValue, this.RegParam);
-            }
-            return true;
+            return !base.IsValid(value);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using MVC = System.ComponentModel.DataAnnotations;
 
 namespace ValidBox4Mvc.ValidRules
 {
@@ -11,7 +11,7 @@ namespace ValidBox4Mvc.ValidRules
     /// 此特性影响EF-CodeFirst生成的数据库字段为非空约束
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class RequiredAttribute : System.ComponentModel.DataAnnotations.RequiredAttribute, IValidRule
+    public class RequiredAttribute : MVC.RequiredAttribute, IValidRule
     {
         /// <summary>
         /// 排序索引

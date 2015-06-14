@@ -10,7 +10,7 @@ namespace System.Web.Mvc.Html
     /// <summary>
     /// 验证框扩展 
     /// </summary>
-    public static class ValidBoxExtend
+    public static partial class ValidBoxExtend
     {
         /// <summary>
         /// 验证必须输入
@@ -134,12 +134,12 @@ namespace System.Web.Mvc.Html
         /// 验证和正则表达式是否匹配
         /// </summary>
         /// <param name="box">验证框</param>        
-        /// <param name="regParam">表达式</param>
+        /// <param name="regexPattern">表达式</param>
         /// <param name="errorMessage">提示信息</param>
         /// <returns></returns>
-        public static ValidBox Match(this ValidBox box, string regParam, string errorMessage = null)
+        public static ValidBox Match(this ValidBox box, string regexPattern, string errorMessage = null)
         {
-            var newBox = new MatchAttribute(regParam) { ErrorMessage = errorMessage }.ToValidBox();
+            var newBox = new MatchAttribute(regexPattern) { ErrorMessage = errorMessage }.ToValidBox();
             return box & newBox;
         }
 
@@ -147,12 +147,12 @@ namespace System.Web.Mvc.Html
         /// 验证输入和正则表达式不匹配
         /// </summary>
         /// <param name="box">验证框</param>
-        /// <param name="regParam">表达式</param>
+        /// <param name="regexPattern">表达式</param>
         /// <param name="errorMessage">提示信息</param>
         /// <returns></returns>
-        public static ValidBox NotMatch(this ValidBox box, string regParam, string errorMessage = null)
+        public static ValidBox NotMatch(this ValidBox box, string regexPattern, string errorMessage = null)
         {
-            var newBox = new NotMatchAttribute(regParam) { ErrorMessage = errorMessage }.ToValidBox();
+            var newBox = new NotMatchAttribute(regexPattern) { ErrorMessage = errorMessage }.ToValidBox();
             return box & newBox;
         }
 

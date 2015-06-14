@@ -13,18 +13,18 @@ namespace ValidBox4Mvc.ValidRules
     public class MaxLengthAttribute : ValidRuleBase
     {
         /// <summary>
-        /// 最大长度
+        /// 获取或设置长度
         /// </summary>
-        public int Length { get; set; }
+        protected int Length { get; set; }
 
         /// <summary>
-        /// 验证长度不能大于指定值
+        /// 验证长度长度不能大于指定值
         /// </summary>
-        /// <param name="length">最大长度</param>
+        /// <param name="length">长度</param>
         public MaxLengthAttribute(int length)
         {
-            this.Length = length;
             this.OrderIndex = 1;
+            this.Length = length;           
             this.ErrorMessage = "长度不能超过{0}个字";
         }
 
@@ -34,8 +34,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var validTpe = this.ValidTypeName + ValidBox.MakeJsArray(this.Length);
-            return new ValidBox(validTpe, this.ErrorMessage);
+            return new ValidBox(this.ValidType, this.ErrorMessage, this.Length);
         }
 
         /// <summary>

@@ -13,14 +13,14 @@ namespace ValidBox4Mvc.ValidRules
     public class RemoteAttribute : ValidRuleBase
     {
         /// <summary>
-        /// 远程地址
+        /// 获取或设置远程地址
         /// </summary>
-        public string Url { get; set; }
+        protected string Url { get; set; }
 
         /// <summary>
-        /// 要传递的目标标签的Id
+        /// 获取或设置要传递的目标标签的Id
         /// </summary>
-        public string[] TargetId { get; set; }
+        protected string[] TargetId { get; set; }
 
         /// <summary>
         /// 远程验证
@@ -29,9 +29,13 @@ namespace ValidBox4Mvc.ValidRules
         /// <param name="targetId">要传递的目标标签的Id</param>
         public RemoteAttribute(string url, params string[] targetId)
         {
-            if (targetId == null || targetId.Length == 0)
+            if (targetId == null)
             {
-                throw new ArgumentException("目标元素ID至少为一个", "targetId");
+                throw new ArgumentNullException("targetId");
+            }
+            if (targetId.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException("targetId", "目标元素ID至少为一个");
             }
             this.Url = url;
             this.TargetId = targetId;
@@ -44,11 +48,8 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var param = new object[this.TargetId.Length + 1];
-            param[0] = this.Url;
-            Array.Copy(this.TargetId, 0, param, 1, this.TargetId.Length);
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(param);
-            return new ValidBox(validType, this.ErrorMessage);
+            var parameters = new object[] { this.Url }.Concat(this.TargetId).ToArray();
+            return new ValidBox(this.ValidType, this.ErrorMessage, parameters);
         }
     }
 }

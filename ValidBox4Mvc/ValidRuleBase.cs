@@ -19,10 +19,23 @@ namespace ValidBox4Mvc
         protected ValidationContext ValidationContext { get; private set; }
 
         /// <summary>
-        /// 排序索引
+        /// 获取自身对应的验证类型
+        /// </summary>
+        protected virtual string ValidType
+        {
+            get
+            {
+                var validType = this.GetType().Name.Replace("Attribute", null);
+                return char.ToLower(validType.First()).ToString() + new string(validType.Skip(1).ToArray());
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置排序索引
         /// 越小越优先
         /// </summary>
         public int OrderIndex { get; set; }
+
 
         /// <summary>
         /// 转换为对应的ValidBox类型
@@ -73,18 +86,6 @@ namespace ValidBox4Mvc
         {
             value = relateValue == null ? null : relateValue.ToString();
             return string.IsNullOrEmpty(value) == false;
-        }
-
-        /// <summary>
-        /// 获取自身对应的验证类型
-        /// </summary>
-        protected virtual string ValidTypeName
-        {
-            get
-            {
-                var validType = this.GetType().Name.Replace("Attribute", null);
-                return char.ToLower(validType.First()).ToString() + new string(validType.Skip(1).ToArray());
-            }
         }
     }
 }

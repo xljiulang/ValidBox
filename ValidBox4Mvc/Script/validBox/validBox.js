@@ -133,12 +133,28 @@
         return self;
     };
 
+    function getTotalWidth(jq) {
+        return jq.width() +
+            parseInt(jq.css("padding-left")) +
+            parseInt(jq.css("padding-right")) +
+            parseInt(jq.css("border-left")) || 0 +
+            parseInt(jq.css("border-right")) || 0;
+    }
+
+    function getTotalHight(jq) {
+        return jq.height() +
+            parseInt(jq.css("padding-top")) +
+            parseInt(jq.css("padding-bottom")) +
+            parseInt(jq.css("border-top")) || 0 +
+            parseInt(jq.css("border-bottom")) || 0;
+    };
+
     // 显示错误信息
     function showError(self, message) {
         hideError(self, true).addClass("valid-error");
 
-        var left = self.offset().left + self.width() + Number(self.css("padding-right").match(/-?\d+/)[0]) + Number(self.css("padding-left").match(/-?\d+/)[0]);
-        var top = self.offset().top;
+        var left = self.offset().left + getTotalWidth(self);
+        var top = self.offset().top + getTotalHight(self) / 2 - 10;
         var html = '<div class="validbox-tip"><span class="m">' + message + '</span><span class="p"></span></div>';
         $(html).css('left', left).css("top", top).appendTo("body");
 
@@ -165,8 +181,8 @@
         var key = 'required';
         var rule = self.data(key);
 
-        if (rule == undefined) {
-            rule = { required: self.attr(key) != undefined, message: self.attr("required-message") }
+        if (!rule) {
+            rule = { required: !!self.attr(key), message: self.attr("required-message") }
             self.data(key, rule);
         }
         return rule;
@@ -180,36 +196,25 @@
             return rules;
         }
 
-        var validTypeArray = $.trim(self.attr("validType")).split(';');
-        var messageArray = eval(self.attr("message")) || [];
-
-        var rules = [];
-        $.each(validTypeArray, function (k, v) {
-            if (v.length > 0) {
-                var ruleName = v.replace(/\[.*\]/, '');
-                var param = eval(v.replace(ruleName, '')) || [];
-                var message = messageArray.length > k ? messageArray[k] : undefined;
-                rules.push({ ruleName: ruleName, param: param, message: message });
-            }
-        });
+        var rules = eval(self.attr("valid-rule")) || [];
         self.data(key, rules);
         return rules;
     };
 
     // 对规则进行验证
-    function validRules(self, callBack) {
+    function validRules(self, func) {
         var required = getRequired(self);
+
         // 不必输入且没有输入
         if (required.required == false && ($.trim(self.val() || '')).length == 0) {
             hideError(self, true);
-            if ($.isFunction(callBack)) callBack(true);
+            if ($.isFunction(func)) func(true);
             return;
         }
         // 必须输入而未输入
         if (required.required && ($.trim(self.val() || '')).length == 0) {
             showError(self, required.message || $.validRules.required.message);
-            if ($.isFunction(callBack))
-                callBack(false);
+            if ($.isFunction(func)) func(false);
             return;
         }
 
@@ -217,25 +222,21 @@
         var rules = getRules(self);
 
         var _validRules = function () {
-            if (index < rules.length) {
+            if (index >= rules.length) {
+                hideError(self, true);
+                if ($.isFunction(func)) func(true);
+            } else {
                 var rule = rules[index++];
-                var validRule = $.validRules[rule.ruleName];
-                validRule.validator(self, rule.param, function (r) {
+                var validRule = $.validRules[rule.r];
+                validRule.validator(self, rule.p, function (r) {
                     if (r == false) {
-                        var message = getMessage(rule.message || validRule.message, rule.param);
+                        var message = getMessage(rule.m || validRule.message, rule.p);
                         showError(self, message);
-                        if ($.isFunction(callBack)) {
-                            callBack(r);
-                        }
+                        if ($.isFunction(func)) func(r);
                     } else {
                         _validRules();
                     }
                 });
-            } else {
-                hideError(self, true);
-                if ($.isFunction(callBack)) {
-                    callBack(true);
-                }
             }
         };
         _validRules();
@@ -246,18 +247,23 @@
         // 绑定事件验证
         var seletor = ".validBox";
         $(document).on("keyup focus", seletor, function () {
-            var self = $(this);
-            validRules(self);
+            validRules($(this));
         }).on("mouseenter", seletor, function () {
             var self = $(this);
-            if (self.hasClass("valid-error")) showError(self, self.data('message'));
+            if (self.hasClass("valid-error")) showError(self, self.data('message') || self.attr("message"));
         }).on("mouseleave blur", seletor, function () {
             var self = $(this);
             if (self.hasClass("valid-error")) hideError(self, false);
+        }).on("submit", "form", function (e) {
+            $(this).validBox(function (r) { if (!r) e.preventDefault(); });
+        }).on("click", "[type=submit]", function (e) {
+            e.preventDefault();
+            $(this).parents("form").submit();
         });
     };
+
     // 验证元素的输入
-    $.fn.validBox = function (callBack) {
+    $.fn.validBox = function (func) {
         var context = this;
         var self = $(this);
         var boxs = self.filter(function () { return $(this).hasClass("validBox") });
@@ -265,21 +271,17 @@
 
         var index = 0;
         var _validBox = function () {
-            if (index < boxs.length) {
+            if (index >= boxs.length) {
+                if ($.isFunction(func)) func.call(context, true);
+            } else {
                 var box = $(boxs[index++]);
                 validRules(box, function (r) {
                     if (r == false) {
-                        if ($.isFunction(callBack)) {
-                            callBack.call(context, r);
-                        }
+                        if ($.isFunction(func)) func.call(context, r);
                     } else {
                         _validBox();
                     }
                 });
-            } else {
-                if ($.isFunction(callBack)) {
-                    callBack.call(context, true);
-                }
             }
         };
 

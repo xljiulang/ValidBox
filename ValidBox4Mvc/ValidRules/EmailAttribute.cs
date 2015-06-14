@@ -22,12 +22,12 @@ namespace ValidBox4Mvc.ValidRules
         }
 
         /// <summary>
-        /// 生成验证框对象
+        /// 转换为对应的ValidBox类型
         /// </summary>
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            return new ValidBox(this.ValidTypeName, this.ErrorMessage);
+            throw new NotImplementedException();
         }
 
         /// <summary>

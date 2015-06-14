@@ -16,25 +16,26 @@ namespace ValidBox4Mvc.ValidRules
         /// <summary>
         /// 是否为整数
         /// </summary>
-        private bool _isInteger;
+        private bool isInteger;
 
         /// <summary>
-        /// 最小值
+        /// 获取或设置最小值
         /// </summary>
-        public double MinValue { get; set; }
+        protected double MinValue { get; set; }
+
         /// <summary>
-        /// 最大值
+        /// 获取或设置最大值
         /// </summary>
-        public double MaxValue { get; set; }
+        protected double MaxValue { get; set; }
 
         /// <summary>
         /// 获取验证类型
         /// </summary>
-        protected override string ValidTypeName
+        protected override string ValidType
         {
             get
             {
-                return this._isInteger ? "rangeInt" : "range";
+                return this.isInteger ? "rangeInt" : "range";
             }
         }
 
@@ -45,7 +46,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <param name="maxValue">最大值</param>
         public RangeAttribute(int minValue, int maxValue)
         {
-            this._isInteger = true;
+            this.isInteger = true;
             this.MinValue = minValue;
             this.MaxValue = maxValue;
             this.ErrorMessage = "值要在区间[{0},{1}]内的整数";
@@ -63,15 +64,13 @@ namespace ValidBox4Mvc.ValidRules
             this.ErrorMessage = "值要在区间[{0},{1}]内的数";
         }
 
-
         /// <summary>
         /// 生成验证框对象
         /// </summary>
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.MinValue, this.MaxValue);
-            return new ValidBox(validType, this.ErrorMessage);
+            return new ValidBox(this.ValidType, this.ErrorMessage, this.MinValue, this.MaxValue);
         }
 
         /// <summary>

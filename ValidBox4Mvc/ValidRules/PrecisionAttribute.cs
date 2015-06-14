@@ -29,13 +29,20 @@ namespace ValidBox4Mvc.ValidRules
             this.Max = max;
             this.ErrorMessage = "精度为{0}到{1}位小数";
         }
-
+        /// <summary>
+        /// 转换为对应的ValidBox类型
+        /// </summary>
+        /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.Min, this.Max);
-            return new ValidBox(validType, this.ErrorMessage);
+            return new ValidBox(this.ValidType, this.ErrorMessage, this.Min, this.Max);
         }
 
+        /// <summary>
+        /// 后台验证
+        /// </summary>
+        /// <param name="value">值</param>
+        /// <returns></returns>
         public override bool IsValid(object value)
         {
             var values = value.ToString().Split('.');

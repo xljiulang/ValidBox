@@ -24,33 +24,13 @@ namespace ValidBox4Mvc.ValidRules
         }
 
         /// <summary>
-        /// 生成验证框
-        /// </summary>
-        /// <returns></returns>
-        public override ValidBox ToValidBox()
-        {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.TargetId);
-            return new ValidBox(validType, this.ErrorMessage);
-        }
-
-        /// <summary>
         /// 后台验证
         /// </summary>       
         /// <param name="value">属性的值</param>
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-            if (value == null || string.IsNullOrEmpty(value.ToString()))
-            {
-                return true;
-            }
-            var targetProperty = this.ValidationContext.ObjectType.GetProperty(TargetId, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-            if (targetProperty == null)
-            {
-                return false;
-            }
-            var tagrgetValue = targetProperty.GetValue(this.ValidationContext.ObjectInstance, null);
-            return !value.Equals(tagrgetValue);
+            return !base.IsValid(value);
         }
     }
 }

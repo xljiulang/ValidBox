@@ -12,16 +12,28 @@ namespace System.Web.Mvc.Html
     /// <summary>
     /// Html验证扩展类
     /// </summary>
-    public static class HtmlHeplerExtend
+    public static partial class HtmlHeplerExtend
     {
         /// <summary>
         /// 生成前端验证规则
         /// </summary>
-        /// <param name="html">html助手</param>
+        /// <param name="html">html助手</param>       
         /// <returns></returns>
         public static ValidBox Valid(this HtmlHelper html)
         {
             return ValidBox.Empty();
+        }
+
+        /// <summary>
+        /// 生成前端验证规则
+        /// </summary>
+        /// <param name="html">html助手</param>   
+        /// <param name="field">绑定的ModelState字段名</param>
+        /// <returns></returns>
+        public static ValidBox Valid(this HtmlHelper html, string field)
+        {
+            var message = html.ViewData.ModelState.FirstModelErrorMessage();
+            return ValidBox.Empty(message);
         }
 
         /// <summary>
@@ -34,35 +46,34 @@ namespace System.Web.Mvc.Html
         /// <returns></returns>
         private static ValidBox GetPropertyValidBox<T, TKey>(this HtmlHelper<T> html, Expression<Func<T, TKey>> keySelector)
         {
-            // 解析表达式
-            var body = keySelector.Body as MemberExpression;
-            if (body == null || body.Member.DeclaringType.IsAssignableFrom(typeof(T)) == false || body.Expression.NodeType != ExpressionType.Parameter)
+            if (keySelector == null)
             {
-                return ValidBox.Empty();
+                throw new ArgumentNullException("keySelector");
             }
 
-            // 过滤获取验证属性
-            var boxAttributeArray = typeof(T).GetProperty(body.Member.Name)
-                .GetCustomAttributes(false)
-                .Where(item => item is IValidRule)
+            var body = keySelector.Body as MemberExpression;
+            if (body == null)
+            {
+                throw new ArgumentException("表示式必须为MemberExpression", "keySelector");
+            }
+
+            if (body.Member.DeclaringType.IsAssignableFrom(typeof(T)) == false || body.Expression.NodeType != ExpressionType.Parameter)
+            {
+                throw new ArgumentException("无法解析的表达式", "keySelector");
+            }
+
+            var boxs = Attribute.GetCustomAttributes(typeof(T).GetProperty(body.Member.Name), typeof(IValidRule), false)
                 .Cast<IValidRule>()
                 .OrderBy(item => item.OrderIndex)
+                .Select(item => item.ToValidBox())
                 .ToArray();
 
-            if (boxAttributeArray.Length == 0)
-            {
-                return ValidBox.Empty();
-            }
+            var message = html.ViewData.ModelState.FirstModelErrorMessage();
+            var validBox = ValidBox.Empty(message);
 
-            // 生成验证规则
-            var validBox = boxAttributeArray[0].ToValidBox();
-            if (boxAttributeArray.Length > 1)
+            foreach (var box in boxs)
             {
-                for (var i = 1; i < boxAttributeArray.Length; i++)
-                {
-                    var box = boxAttributeArray[i].ToValidBox();
-                    validBox = validBox & box;
-                }
+                validBox = validBox & box;
             }
             return validBox;
         }
@@ -75,7 +86,7 @@ namespace System.Web.Mvc.Html
         /// <param name="html">Html</param>
         /// <param name="keySelector">属性选择表达式</param>      
         /// <returns></returns>
-        public static object ValidFor<T, TKey>(this HtmlHelper<T> html, Expression<Func<T, TKey>> keySelector)
+        public static IDictionary<string, object> ValidFor<T, TKey>(this HtmlHelper<T> html, Expression<Func<T, TKey>> keySelector)
         {
             return html.GetPropertyValidBox(keySelector).AsHtmlAttribute();
         }

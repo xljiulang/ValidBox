@@ -10,32 +10,16 @@ namespace ValidBox4Mvc.ValidRules
     /// 表示验证长度不能小于指定值
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class MinLengthAttribute : ValidRuleBase
+    public class MinLengthAttribute : MaxLengthAttribute
     {
-        /// <summary>
-        /// 最小长度
-        /// </summary>
-        public int Length { get; set; }
-
         /// <summary>
         /// 验证长度不能小于指定值
         /// </summary>
         /// <param name="length">最小长度</param>
         public MinLengthAttribute(int length)
+            : base(length)
         {
-            this.Length = length;
-            this.OrderIndex = 1;
             this.ErrorMessage = "长度不能小于{0}个字";
-        }
-
-        /// <summary>
-        /// 生成验证框对象
-        /// </summary>
-        /// <returns></returns>
-        public override ValidBox ToValidBox()
-        {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(Length);
-            return new ValidBox(validType, this.ErrorMessage);
         }
 
         /// <summary>
@@ -51,15 +35,6 @@ namespace ValidBox4Mvc.ValidRules
                 return true;
             }
             return currentValue.Length >= this.Length;
-        }
-
-        /// <summary>
-        /// 获取错误提示信息
-        /// </summary>       
-        /// <returns></returns>
-        public override string FormatErrorMessage(string name)
-        {
-            return string.Format(this.ErrorMessage, this.Length);
         }
     }
 }

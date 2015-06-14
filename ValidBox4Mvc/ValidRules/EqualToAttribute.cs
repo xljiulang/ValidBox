@@ -14,9 +14,9 @@ namespace ValidBox4Mvc.ValidRules
     public class EqualToAttribute : ValidRuleBase
     {
         /// <summary>
-        /// 匹配的目标ID
+        /// 获取或设置目标ID值
         /// </summary>
-        public string TargetId { get; set; }
+        private string TargetId { get; set; }
 
         /// <summary>
         /// 验证是否和目标ID的值一致
@@ -29,13 +29,12 @@ namespace ValidBox4Mvc.ValidRules
         }
 
         /// <summary>
-        /// 生成验证框对象
+        /// 转换为对应的ValidBox类型
         /// </summary>
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            var validType = this.ValidTypeName + ValidBox.MakeJsArray(this.TargetId);
-            return new ValidBox(validType, this.ErrorMessage);
+            return new ValidBox(this.ValidType, this.ErrorMessage, this.TargetId);
         }
 
         /// <summary>
@@ -48,7 +47,7 @@ namespace ValidBox4Mvc.ValidRules
             string currentValue;
             if (base.HasStringValue(value, out currentValue))
             {
-                var targetProperty = this.ValidationContext.ObjectType.GetProperty(TargetId, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+                var targetProperty = this.ValidationContext.ObjectType.GetProperty(this.TargetId, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
                 if (targetProperty == null)
                 {
                     return false;

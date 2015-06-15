@@ -21,7 +21,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Required(this ValidBox box, string errorMessage = null)
         {
             var newBox = new RequiredAttribute { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>      
@@ -33,7 +33,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Url(this ValidBox box, string errorMessage = null)
         {
             var newBox = new UrlAttribute { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Email(this ValidBox box, string errorMessage = null)
         {
             var newBox = new EmailAttribute { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Length(this ValidBox box, int minLength, int maxLength, string errorMessage = null)
         {
             var newBox = new LengthAttribute(minLength, maxLength) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox MinLength(this ValidBox box, int length, string errorMessage = null)
         {
             var newBox = new MinLengthAttribute(length) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox MaxLength(this ValidBox box, int length, string errorMessage = null)
         {
             var newBox = new MaxLengthAttribute(length) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Range(this ValidBox box, double minValue, double maxValue, string errorMessage = null)
         {
             var newBox = new RangeAttribute(minValue, maxValue) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Range(this ValidBox box, int minValue, int maxValue, string errorMessage = null)
         {
             var newBox = new RangeAttribute(minValue, maxValue) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Precision(this ValidBox box, int min, int max, string errorMessage = null)
         {
             var newBox = new PrecisionAttribute(min, max) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Match(this ValidBox box, string regexPattern, string errorMessage = null)
         {
             var newBox = new MatchAttribute(regexPattern) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox NotMatch(this ValidBox box, string regexPattern, string errorMessage = null)
         {
             var newBox = new NotMatchAttribute(regexPattern) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox EqualTo(this ValidBox box, string targetID, string errorMessage = null)
         {
             var newBox = new EqualToAttribute(targetID) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
 
@@ -180,7 +180,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox NotEqualTo(this ValidBox box, string targetID, string errorMessage = null)
         {
             var newBox = new NotEqualToAttribute(targetID) { ErrorMessage = errorMessage }.ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
 
 
@@ -194,7 +194,7 @@ namespace System.Web.Mvc.Html
         public static ValidBox Remote(this ValidBox box, string url, params string[] targetID)
         {
             var newBox = new ValidBox4Mvc.ValidRules.RemoteAttribute(url, targetID).ToValidBox();
-            return box & newBox;
+            return ValidBox.Merge(box, newBox);
         }
     }
 }

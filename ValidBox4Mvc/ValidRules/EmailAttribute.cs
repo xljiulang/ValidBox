@@ -27,7 +27,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            throw new NotImplementedException();
+            return ValidBox.New(this.ValidType, this.ErrorMessage);
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace ValidBox4Mvc.ValidRules
         public override ValidBox ToValidBox()
         {
             var parameters = new object[] { this.Url }.Concat(this.TargetId).ToArray();
-            return new ValidBox(this.ValidType, this.ErrorMessage, parameters);
+            return ValidBox.New(this.ValidType, this.ErrorMessage, parameters);
         }
     }
 }

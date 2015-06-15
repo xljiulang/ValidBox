@@ -73,7 +73,7 @@ namespace System.Web.Mvc.Html
 
             foreach (var box in boxs)
             {
-                validBox = validBox & box;
+                validBox = ValidBox.Merge(validBox, box);
             }
             return validBox;
         }
@@ -101,6 +101,20 @@ namespace System.Web.Mvc.Html
         /// <param name="attribute">附加的html属性</param>
         /// <returns></returns>
         public static IDictionary<string, object> ValidFor<T, TKey>(this HtmlHelper<T> html, Expression<Func<T, TKey>> keySelector, object attribute)
+        {
+            return html.GetPropertyValidBox(keySelector).AsHtmlAttribute(attribute);
+        }
+
+        /// <summary>
+        /// 依据实体属性的特性生成前端验证规则
+        /// </summary>
+        /// <typeparam name="T">Model类型</typeparam>
+        /// <typeparam name="TKey">键</typeparam>
+        /// <param name="html">Html</param>
+        /// <param name="keySelector">属性选择表达式</param>    
+        /// <param name="attribute">附加的html属性</param>
+        /// <returns></returns>
+        public static IDictionary<string, object> ValidFor<T, TKey>(this HtmlHelper<T> html, Expression<Func<T, TKey>> keySelector, IDictionary<string, object> attribute)
         {
             return html.GetPropertyValidBox(keySelector).AsHtmlAttribute(attribute);
         }

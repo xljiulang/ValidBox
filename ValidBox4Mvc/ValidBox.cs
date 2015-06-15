@@ -19,52 +19,28 @@ namespace ValidBox4Mvc
         /// <summary>
         /// 初始时消息
         /// </summary>
-        private string _message;
+        private string message;
 
         /// <summary>
-        /// 获取字段是否是必须输入的
+        /// 是否为必须输入
         /// </summary>
-        private KeyValuePair<bool, string> _required;
+        private bool required;
+
+        /// <summary>
+        /// 必须输入且无输入时提示语
+        /// </summary>
+        private string requiredMessage;
 
         /// <summary>
         /// 验证规则
         /// </summary>
-        private List<ValidRule> _validRuleList;
+        private List<ValidRule> validRuleList = new List<ValidRule>();
 
         /// <summary>
         /// 验证框        
         /// </summary>       
         private ValidBox()
         {
-            this._validRuleList = new List<ValidRule>();
-        }
-
-        /// <summary>
-        /// 表示必须输入的验证框对象
-        /// </summary>
-        /// <param name="requiredMessage">未输入时的提示信息</param>
-        internal ValidBox(string requiredMessage)
-            : this()
-        {
-            this._required = new KeyValuePair<bool, string>(true, requiredMessage);
-        }
-
-        /// <summary>
-        /// 表示一般验证框对象
-        /// <param name="validType">验证类型</param>
-        /// <param name="validMessage">不通过时提示信息</param>
-        /// <param name="parameters">验证的参数</param>
-        /// </summary>
-        public ValidBox(string validType, string validMessage, params object[] parameters)
-            : this()
-        {
-            var rule = new ValidRule
-            {
-                r = validType,
-                p = parameters,
-                m = validMessage
-            };
-            this._validRuleList.Add(rule);
         }
 
         /// <summary>
@@ -76,25 +52,25 @@ namespace ValidBox4Mvc
             var attributes = new Dictionary<string, object>();
             attributes.Add("class", "validBox");
 
-            if (this._required.Key)
+            if (this.required == true)
             {
                 attributes.Add("required", "required");
-                if (string.IsNullOrEmpty(this._required.Value) == false)
+                if (string.IsNullOrEmpty(this.requiredMessage) == false)
                 {
-                    attributes.Add("required-message", this._required.Value);
+                    attributes.Add("required-message", this.requiredMessage);
                 }
             }
 
-            if (this._validRuleList.Count > 0)
+            if (this.validRuleList.Count > 0)
             {
-                var rules = new JavaScriptSerializer().Serialize(this._validRuleList);
+                var rules = new JavaScriptSerializer().Serialize(this.validRuleList);
                 attributes.Add("valid-rule", rules);
             }
 
-            if (string.IsNullOrEmpty(this._message) == false)
+            if (string.IsNullOrEmpty(this.message) == false)
             {
                 attributes["class"] = "validBox valid-error";
-                attributes.Add("message", this._message);
+                attributes.Add("message", this.message);
             }
             return attributes;
         }
@@ -104,7 +80,7 @@ namespace ValidBox4Mvc
         /// <param name="attribute">附加的html属性</param>
         /// </summary>
         /// <returns></returns>
-        public IDictionary<string, object> AsHtmlAttribute(object attribute)
+        public IDictionary<string, object> AsHtmlAttribute(IDictionary<string, object> attribute)
         {
             var attributes = this.AsHtmlAttribute();
             if (attribute == null)
@@ -112,13 +88,7 @@ namespace ValidBox4Mvc
                 return attributes;
             }
 
-            var kvs = attribute as IDictionary<string, object>;
-            if (kvs == null)
-            {
-                kvs = HtmlHelper.AnonymousObjectToHtmlAttributes(attribute);
-            }
-
-            foreach (var item in kvs)
+            foreach (var item in attribute)
             {
                 if (attributes.ContainsKey(item.Key))
                 {
@@ -135,6 +105,20 @@ namespace ValidBox4Mvc
             return attributes;
         }
 
+        /// <summary>
+        /// 转换为Html属性对象
+        /// <param name="attribute">附加的html属性</param>
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, object> AsHtmlAttribute(object attribute)
+        {
+            var kvs = attribute as IDictionary<string, object>;
+            if (kvs == null)
+            {
+                kvs = HtmlHelper.AnonymousObjectToHtmlAttributes(attribute);
+            }
+            return this.AsHtmlAttribute(kvs);
+        }
 
         /// <summary>
         /// 表示生成无规则的空验证框
@@ -152,8 +136,38 @@ namespace ValidBox4Mvc
         /// <returns></returns>
         public static ValidBox Empty(string message)
         {
-            return new ValidBox() { _message = message };
+            return new ValidBox() { message = message };
         }
+
+        /// <summary>
+        /// 表示必须输入的验证框对象
+        /// </summary>
+        /// <param name="requiredMessage">未输入时的提示信息</param>
+        public static ValidBox Request(string requiredMessage)
+        {
+            return new ValidBox { required = true, requiredMessage = requiredMessage };
+        }
+
+        /// <summary>
+        /// 表示一般验证框对象
+        /// <param name="validType">验证类型</param>
+        /// <param name="validMessage">不通过时提示信息</param>
+        /// <param name="parameters">验证的参数</param>
+        /// </summary>
+        public static ValidBox New(string validType, string validMessage, params object[] parameters)
+        {
+            var rule = new ValidRule
+            {
+                r = validType,
+                p = parameters,
+                m = validMessage
+            };
+
+            var box = new ValidBox();
+            box.validRuleList.Add(rule);
+            return box;
+        }
+
 
         /// <summary>
         /// 验证框合并操作
@@ -162,26 +176,16 @@ namespace ValidBox4Mvc
         /// <param name="box1">要合并的对象1</param>
         /// /// <param name="box2">要合并的对象2</param>
         /// <returns></returns>
-        private static ValidBox Merge(ValidBox box1, ValidBox box2)
+        public static ValidBox Merge(ValidBox box1, ValidBox box2)
         {
             var box = new ValidBox();
-            box._validRuleList.AddRange(box1._validRuleList);
-            box._validRuleList.AddRange(box2._validRuleList);
+            box.validRuleList.AddRange(box1.validRuleList);
+            box.validRuleList.AddRange(box2.validRuleList);
 
-            box._required = box1._required.Key ? box1._required : box2._required;
-            box._message = string.IsNullOrEmpty(box1._message) ? box2._message : box1._message;
+            box.required = box1.required ? box1.required : box2.required;
+            box.requiredMessage = box1.required ? box1.requiredMessage : box2.requiredMessage;
+            box.message = string.IsNullOrEmpty(box1.message) ? box2.message : box1.message;
             return box;
-        }
-
-        /// <summary>
-        /// 合并操作符号 
-        /// </summary>
-        /// <param name="box1">要合并的对象1</param>
-        /// <param name="box2">要合并的对象2</param>
-        /// <returns></returns>
-        public static ValidBox operator &(ValidBox box1, ValidBox box2)
-        {
-            return ValidBox.Merge(box1, box2);
         }
     }
 }

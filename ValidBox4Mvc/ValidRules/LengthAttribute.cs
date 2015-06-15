@@ -49,7 +49,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public ValidBox ToValidBox()
         {
-            return new ValidBox("length", this.ErrorMessage, this.MinimumLength, this.MaximumLength);
+            return ValidBox.New("length", this.ErrorMessage, this.MinimumLength, this.MaximumLength);
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public ValidBox ToValidBox()
         {
-            return new ValidBox(this.ErrorMessage);
+            return ValidBox.Request(this.ErrorMessage);
         }
     }
 }

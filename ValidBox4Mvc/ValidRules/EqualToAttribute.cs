@@ -34,7 +34,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            return new ValidBox(this.ValidType, this.ErrorMessage, this.TargetId);
+            return ValidBox.New(this.ValidType, this.ErrorMessage, this.TargetId);
         }
 
         /// <summary>

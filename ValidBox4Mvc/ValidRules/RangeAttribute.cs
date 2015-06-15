@@ -70,7 +70,7 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            return new ValidBox(this.ValidType, this.ErrorMessage, this.MinValue, this.MaxValue);
+            return ValidBox.New(this.ValidType, this.ErrorMessage, this.MinValue, this.MaxValue);
         }
 
         /// <summary>

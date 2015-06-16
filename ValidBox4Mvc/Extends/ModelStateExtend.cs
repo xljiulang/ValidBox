@@ -12,17 +12,44 @@ namespace System.Web.Mvc
     public static partial class ModelStateExtend
     {
         /// <summary>
-        /// 获取第一个验证错误信息
+        /// 获取ModelState的第一个错误信息
         /// </summary>
         /// <param name="modelState">modelState</param>
         /// <returns></returns>
-        public static KeyValuePair<string, string> FirstModelError(this ModelStateDictionary modelState)
+        private static string FirstErrorMessage(this ModelState modelState)
         {
-            foreach (var key in modelState.Keys)
+            if (modelState == null || modelState.Errors.Count == 0)
             {
-                if (modelState[key].Errors.Count > 0)
+                return null;
+            }
+            return modelState.Errors[0].ErrorMessage;
+        }
+
+        /// <summary>
+        /// 获取错误提示信息
+        /// </summary>
+        /// <param name="modelStates">ModelStateDictionary</param>
+        /// <param name="field">字段名</param>
+        /// <returns></returns>
+        public static string GetErrorMessage(this ModelStateDictionary modelStates, string field)
+        {
+            ModelState state;
+            modelStates.TryGetValue(field, out state);
+            return state.FirstErrorMessage();
+        }
+
+        /// <summary>
+        /// 获取第一个验证错误信息
+        /// </summary>
+        /// <param name="modelStates">ModelStateDictionary</param>
+        /// <returns></returns>
+        public static KeyValuePair<string, string> FirstModelError(this ModelStateDictionary modelStates)
+        {
+            foreach (var key in modelStates.Keys)
+            {
+                if (modelStates[key].Errors.Count > 0)
                 {
-                    var error = modelState[key].Errors[0];
+                    var error = modelStates[key].Errors[0];
                     return new KeyValuePair<string, string>(key, error.ErrorMessage);
                 }
             }
@@ -32,11 +59,11 @@ namespace System.Web.Mvc
         /// <summary>
         /// 获取第一个验证错误信息内容
         /// </summary>
-        /// <param name="modelState">modelState</param>
+        /// <param name="modelStates">ModelStateDictionary</param>
         /// <returns></returns>
-        public static string FirstModelErrorMessage(this ModelStateDictionary modelState)
+        public static string FirstModelErrorMessage(this ModelStateDictionary modelStates)
         {
-            return modelState.FirstModelError().Value;
+            return modelStates.FirstModelError().Value;
         }
     }
 }

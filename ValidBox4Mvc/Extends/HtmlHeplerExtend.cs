@@ -32,9 +32,9 @@ namespace System.Web.Mvc.Html
         /// <returns></returns>
         public static ValidBox Valid(this HtmlHelper html, string field)
         {
-            var message = html.ViewData.ModelState.FirstModelErrorMessage();
+            var message = html.ViewData.ModelState.GetErrorMessage(field);
             return ValidBox.Empty(message);
-        }
+        }       
 
         /// <summary>
         /// 获取表达式对应属性的验证框描述
@@ -54,7 +54,7 @@ namespace System.Web.Mvc.Html
             var body = keySelector.Body as MemberExpression;
             if (body == null)
             {
-                throw new ArgumentException("表示式必须为MemberExpression", "keySelector");
+                throw new ArgumentException("表达式必须为MemberExpression", "keySelector");
             }
 
             if (body.Member.DeclaringType.IsAssignableFrom(typeof(T)) == false || body.Expression.NodeType != ExpressionType.Parameter)
@@ -68,7 +68,7 @@ namespace System.Web.Mvc.Html
                 .Select(item => item.ToValidBox())
                 .ToArray();
 
-            var message = html.ViewData.ModelState.FirstModelErrorMessage();
+            var message = html.ViewData.ModelState.GetErrorMessage(body.Member.Name);
             var validBox = ValidBox.Empty(message);
 
             foreach (var box in boxs)

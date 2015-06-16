@@ -32,6 +32,11 @@ namespace ValidBox4Mvc
         private string requiredMessage;
 
         /// <summary>
+        /// Html属性缓存
+        /// </summary>
+        private IDictionary<string, object> attributeCached;
+
+        /// <summary>
         /// 验证规则
         /// </summary>
         private List<ValidRule> validRuleList = new List<ValidRule>();
@@ -49,6 +54,11 @@ namespace ValidBox4Mvc
         /// <returns></returns>
         public IDictionary<string, object> AsHtmlAttribute()
         {
+            if (this.attributeCached != null)
+            {
+                return this.attributeCached;
+            }
+
             var attributes = new Dictionary<string, object>();
             attributes.Add("class", "validBox");
 
@@ -72,6 +82,8 @@ namespace ValidBox4Mvc
                 attributes["class"] = "validBox valid-error";
                 attributes.Add("message", this.message);
             }
+
+            this.attributeCached = attributes;
             return attributes;
         }
 
@@ -82,24 +94,21 @@ namespace ValidBox4Mvc
         /// <returns></returns>
         public IDictionary<string, object> AsHtmlAttribute(IDictionary<string, object> attribute)
         {
-            var attributes = this.AsHtmlAttribute();
             if (attribute == null)
             {
-                return attributes;
+                return this.AsHtmlAttribute();
             }
 
+            var attributes = this.AsHtmlAttribute().ToDictionary((kv) => kv.Key, kv => kv.Value);
             foreach (var item in attribute)
             {
-                if (attributes.ContainsKey(item.Key))
-                {
-                    if (item.Key == "class")
-                    {
-                        attributes[item.Key] = string.Format("{0} {1}", attributes[item.Key], item.Value).Trim();
-                    }
-                }
-                else
+                if (attributes.ContainsKey(item.Key) == false)
                 {
                     attributes.Add(item.Key, item.Value);
+                }
+                else if (string.Equals(item.Key, "class", StringComparison.OrdinalIgnoreCase))
+                {
+                    attributes[item.Key] = string.Format("{0} {1}", attributes[item.Key], item.Value).Trim();
                 }
             }
             return attributes;
@@ -112,6 +121,11 @@ namespace ValidBox4Mvc
         /// <returns></returns>
         public IDictionary<string, object> AsHtmlAttribute(object attribute)
         {
+            if (attribute == null)
+            {
+                return this.AsHtmlAttribute();
+            }
+
             var kvs = attribute as IDictionary<string, object>;
             if (kvs == null)
             {

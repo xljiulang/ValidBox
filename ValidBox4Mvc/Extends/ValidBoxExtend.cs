@@ -187,13 +187,25 @@ namespace System.Web.Mvc.Html
         /// <summary>
         /// 远程验证输入值
         /// </summary>
-        /// <param name="box">提示信息</param>
+        /// <param name="box">验证框</param>
         /// <param name="url">远程地址</param>
         /// <param name="targetID">提交的目标元素的ID</param>
         /// <returns></returns>
         public static ValidBox Remote(this ValidBox box, string url, params string[] targetID)
         {
             var newBox = new ValidBox4Mvc.ValidRules.RemoteAttribute(url, targetID).ToValidBox();
+            return ValidBox.Merge(box, newBox);
+        }
+
+        /// <summary>
+        /// 验证输入是否为数字类型
+        /// </summary>
+        /// <param name="box">验证框</param>
+        /// <param name="errorMessage">错误提示消息</param>
+        /// <returns></returns>
+        public static ValidBox Number(this ValidBox box, string errorMessage = null)
+        {
+            var newBox = ValidBox.New("number", errorMessage);
             return ValidBox.Merge(box, newBox);
         }
     }

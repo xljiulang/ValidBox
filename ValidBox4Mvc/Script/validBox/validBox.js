@@ -97,6 +97,12 @@
         },
         message: '值要在区间[{0},{1}]内的整数'
     },
+    number: {
+        validator: function (self, param, callBack) {
+            callBack(!isNaN(Number(self.val())));
+        },
+        message: '请输入正确的数值'
+    },
     remote: {
         validator: function (self, param, callBack) {
             if (this.ajax != undefined && this.ajax.readyState != 4) {

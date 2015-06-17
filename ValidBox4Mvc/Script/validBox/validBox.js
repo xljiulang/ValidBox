@@ -105,23 +105,23 @@
     },
     remote: {
         validator: function (self, param, callBack) {
-            if (this.ajax != undefined && this.ajax.readyState != 4) {
+            if (this.ajax && this.ajax.readyState != 4) {
                 this.ajax.abort();
             }
 
             var array = [];
             $.each(param, function (k, v) {
-                if (k > 0) {
-                    array.push(v + '=' + $('#' + v).val());
-                }
+                if (k > 0) array.push(v + '=' + $('#' + v).val());
             });
 
             this.ajax = $.post(param[0], array.join('&'), function (data) {
-                if (data instanceof Boolean) {
-                    callBack(data);
+                if (data && typeof data === "object") {
+                    if (data.message) {
+                        $.validRules.remote.message = data.message;
+                    }
+                    callBack(!!data.state);
                 } else {
-                    $.validRules.remote.message = data.message;
-                    callBack(data.state);
+                    callBack(false);
                 }
             }, 'json');
         },

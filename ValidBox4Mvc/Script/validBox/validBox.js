@@ -139,28 +139,12 @@
         return self;
     };
 
-    function getTotalWidth(jq) {
-        return jq.width() +
-            parseInt(jq.css("padding-left")) +
-            parseInt(jq.css("padding-right")) +
-            parseInt(jq.css("border-left")) || 0 +
-            parseInt(jq.css("border-right")) || 0;
-    }
-
-    function getTotalHight(jq) {
-        return jq.height() +
-            parseInt(jq.css("padding-top")) +
-            parseInt(jq.css("padding-bottom")) +
-            parseInt(jq.css("border-top")) || 0 +
-            parseInt(jq.css("border-bottom")) || 0;
-    };
-
     // 显示错误信息
     function showError(self, message) {
         hideError(self, true).addClass("valid-error");
 
-        var left = self.offset().left + getTotalWidth(self);
-        var top = self.offset().top + getTotalHight(self) / 2 - 10;
+        var left = self.offset().left + self.outerWidth();
+        var top = self.offset().top + self.outerHeight() / 2 - 10;
         var html = '<div class="validbox-tip"><span class="m">' + message + '</span><span class="p"></span></div>';
         $(html).css('left', left).css("top", top).appendTo("body");
 
@@ -203,6 +187,9 @@
         }
 
         var rules = eval(self.attr("valid-rule")) || [];
+        for (var i = 0; i < rules.length; i++) {
+            rules[i].p = rules[i].p || [];
+        }
         self.data(key, rules);
         return rules;
     };
@@ -233,7 +220,7 @@
                 if ($.isFunction(func)) func(true);
             } else {
                 var rule = rules[index++];
-                var validRule = $.validRules[rule.r];
+                var validRule = $.validRules[rule.n];
                 validRule.validator(self, rule.p, function (r) {
                     if (r == false) {
                         var message = getMessage(rule.m || validRule.message, rule.p);

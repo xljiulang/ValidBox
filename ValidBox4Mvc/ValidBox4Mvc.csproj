@@ -54,7 +54,6 @@
     <Compile Include="Extends\ModelStateExtend.cs" />
     <Compile Include="Extends\ValidBoxExtend.cs" />
     <Compile Include="IValidRule.cs" />
-    <Compile Include="ValidRule.cs" />
     <Compile Include="ValidRules\EmailAttribute.cs" />
     <Compile Include="ValidRules\EqualToAttribute.cs" />
     <Compile Include="ValidRules\LengthAttribute.cs" />

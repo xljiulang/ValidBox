@@ -39,7 +39,7 @@ namespace ValidBox4Mvc
         /// <summary>
         /// 验证规则
         /// </summary>
-        private List<ValidRule> validRuleList = new List<ValidRule>();
+        private List<object> validRuleList = new List<object>();
 
         /// <summary>
         /// 验证框        
@@ -99,7 +99,7 @@ namespace ValidBox4Mvc
                 return this.AsHtmlAttribute();
             }
 
-            var attributes = this.AsHtmlAttribute().ToDictionary((kv) => kv.Key, kv => kv.Value);
+            var attributes = this.AsHtmlAttribute().ToDictionary((kv) => kv.Key, kv => kv.Value, StringComparer.OrdinalIgnoreCase);
             foreach (var item in attribute)
             {
                 if (attributes.ContainsKey(item.Key) == false)
@@ -163,6 +163,33 @@ namespace ValidBox4Mvc
         }
 
         /// <summary>
+        /// 生成验证规则实体
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="message">消息</param>
+        /// <param name="parameters">参数</param>
+        /// <returns></returns>
+        private static object GenerateRule(string name, string message, object[] parameters)
+        {
+            var nonMessage = string.IsNullOrEmpty(message);
+            var nonParameter = parameters == null || parameters.Length == 0;
+
+            if (nonMessage && nonParameter)
+            {
+                return new { n = name };
+            }
+            if (nonMessage == true)
+            {
+                return new { n = name, p = parameters };
+            }
+            if (nonParameter == true)
+            {
+                return new { n = name, m = message };
+            }
+            return new { n = name, p = parameters, m = message };
+        }
+
+        /// <summary>
         /// 表示一般验证框对象
         /// <param name="validType">验证类型</param>
         /// <param name="validMessage">不通过时提示信息</param>
@@ -170,14 +197,8 @@ namespace ValidBox4Mvc
         /// </summary>
         public static ValidBox New(string validType, string validMessage, params object[] parameters)
         {
-            var rule = new ValidRule
-            {
-                r = validType,
-                p = parameters,
-                m = validMessage
-            };
-
             var box = new ValidBox();
+            var rule = ValidBox.GenerateRule(validType, validMessage, parameters);
             box.validRuleList.Add(rule);
             return box;
         }

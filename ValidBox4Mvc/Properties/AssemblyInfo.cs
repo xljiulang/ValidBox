@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ValidBox4Mvc")]
 [assembly: AssemblyDescription("MVC实体验证框架")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("https://github.com/xljiulang/ValidBox")]
 [assembly: AssemblyProduct("ValidBox4Mvc")]
-[assembly: AssemblyCopyright("Copyright ©  2014-2015")]
+[assembly: AssemblyCopyright("Copyright © Chen Guowei 2014-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

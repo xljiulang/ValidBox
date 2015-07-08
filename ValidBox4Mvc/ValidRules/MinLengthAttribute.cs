@@ -27,14 +27,13 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>      
         /// <param name="value">属性值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            var currentValue = value == null ? null : value.ToString();
-            if (string.IsNullOrEmpty(currentValue))
+            if (string.IsNullOrEmpty(value))
             {
                 return true;
             }
-            return currentValue.Length >= this.Length;
+            return value.Length >= this.Length;
         }
     }
 }

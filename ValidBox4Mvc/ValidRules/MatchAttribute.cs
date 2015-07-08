@@ -37,21 +37,20 @@ namespace ValidBox4Mvc.ValidRules
         {
             return ValidBox.New(this.ValidType, this.ErrorMessage, this.RegexPattern);
         }
- 
+
 
         /// <summary>
         /// 后台验证
         /// </summary>
         /// <param name="value">属性值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            string currentValue;
-            if (base.HasStringValue(value, out currentValue))
+            if (string.IsNullOrEmpty(value))
             {
-                return Regex.IsMatch(currentValue, this.RegexPattern);
+                return true;
             }
-            return true;
+            return Regex.IsMatch(value, this.RegexPattern);
         }
     }
 }

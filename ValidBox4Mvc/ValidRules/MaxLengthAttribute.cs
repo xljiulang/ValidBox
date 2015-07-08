@@ -24,7 +24,7 @@ namespace ValidBox4Mvc.ValidRules
         public MaxLengthAttribute(int length)
         {
             this.OrderIndex = 1;
-            this.Length = length;           
+            this.Length = length;
             this.ErrorMessage = "长度不能超过{0}个字";
         }
 
@@ -42,14 +42,13 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>         
         /// <param name="value">属性值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            string currentValue;
-            if (base.HasStringValue(value, out currentValue))
+            if (string.IsNullOrEmpty(value))
             {
-                return currentValue.Length <= this.Length;
+                return true;
             }
-            return true;
+            return value.Length <= this.Length;
         }
 
         /// <summary>

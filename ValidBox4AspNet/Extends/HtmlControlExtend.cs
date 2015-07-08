@@ -18,20 +18,52 @@ namespace System.Web
         /// </summary>
         /// <param name="ctrl">控件</param>
         /// <returns></returns>
-        public static ValidBox Valid(this HtmlControl ctrl)
+        public static ValidBox Valid(this HtmlInputControl ctrl)
         {
             return ValidBox.Empty(ctrl);
         }
+
+        /// <summary>
+        /// 生成控件的前面验证规则
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <returns></returns>
+        public static ValidBox Valid(this HtmlSelect ctrl)
+        {
+            return ValidBox.Empty(ctrl);
+        }
+
+        /// <summary>
+        /// 生成控件的前面验证规则
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <returns></returns>
+        public static ValidBox Valid(this HtmlTextArea ctrl)
+        {
+            return ValidBox.Empty(ctrl);
+        }
+
 
         /// <summary>
         /// 设置前端验证错误显示消息
         /// </summary>
         /// <param name="ctrl">控件</param>
         /// <param name="errorMessage">错误显示消息</param>
-        public static void SetErrorMessage(this HtmlControl ctrl, string errorMessage)
+        /// <param name="otherClass">其它的class属性</param>
+        private static void SetErrorMessage(this HtmlControl ctrl, string errorMessage, string otherClass)
         {
-            ctrl.Attributes.Add("class", "validBox valid-error");
+            ctrl.Attributes.Add("class", ("validBox valid-error " + otherClass).Trim());
             ctrl.Attributes.Add("message", errorMessage);
+        }
+
+        /// <summary>
+        /// 设置前端验证错误显示消息
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="errorMessage">错误显示消息</param>      
+        public static void SetErrorMessage(this HtmlInputControl ctrl, string errorMessage)
+        {
+            ctrl.SetErrorMessage(errorMessage, null);
         }
 
         /// <summary>
@@ -40,10 +72,51 @@ namespace System.Web
         /// <param name="ctrl">控件</param>
         /// <param name="errorMessage">错误显示消息</param>
         /// <param name="otherClass">其它的class属性</param>
-        public static void SetErrorMessage(this HtmlControl ctrl, string errorMessage, string otherClass)
+        public static void SetErrorMessage(this HtmlInputControl ctrl, string errorMessage, string otherClass)
         {
-            ctrl.Attributes.Add("class", ("validBox valid-error " + otherClass).Trim());
-            ctrl.Attributes.Add("message", errorMessage);
+            ctrl.SetErrorMessage(errorMessage, otherClass);
+        }
+
+        /// <summary>
+        /// 设置前端验证错误显示消息
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="errorMessage">错误显示消息</param>       
+        public static void SetErrorMessage(this HtmlSelect ctrl, string errorMessage)
+        {
+            ctrl.SetErrorMessage(errorMessage, null);
+        }
+
+        /// <summary>
+        /// 设置前端验证错误显示消息
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="errorMessage">错误显示消息</param>
+        /// <param name="otherClass">其它的class属性</param>
+        public static void SetErrorMessage(this HtmlSelect ctrl, string errorMessage, string otherClass)
+        {
+            ctrl.SetErrorMessage(errorMessage, otherClass);
+        }
+
+        /// <summary>
+        /// 设置前端验证错误显示消息
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="errorMessage">错误显示消息</param>       
+        public static void SetErrorMessage(this HtmlTextArea ctrl, string errorMessage)
+        {
+            ctrl.SetErrorMessage(errorMessage, null);
+        }
+
+        /// <summary>
+        /// 设置前端验证错误显示消息
+        /// </summary>
+        /// <param name="ctrl">控件</param>
+        /// <param name="errorMessage">错误显示消息</param>
+        /// <param name="otherClass">其它的class属性</param>
+        public static void SetErrorMessage(this HtmlTextArea ctrl, string errorMessage, string otherClass)
+        {
+            ctrl.SetErrorMessage(errorMessage, otherClass);
         }
 
         /// <summary>
@@ -66,7 +139,7 @@ namespace System.Web
             {
                 return true;
             }
-            ctrl.SetErrorMessage(firstError.FormatErrorMessage());
+            ctrl.SetErrorMessage(firstError.FormatErrorMessage(), null);
             return false;
         }
 

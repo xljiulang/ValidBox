@@ -16,7 +16,7 @@ namespace ValidBox4AspNet.ValidRules
         /// <returns></returns>
         public override ValidBox ToValidBox()
         {
-            this.ErrorMessage = "请输入正确的数字";
+            this.ErrorMessage = "请输入正确的数值";
             return ValidBox.New(this, this.ValidType, this.ErrorMessage);
         }
 

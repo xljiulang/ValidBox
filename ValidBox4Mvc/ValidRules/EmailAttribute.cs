@@ -35,14 +35,13 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>
         /// <param name="value">实体属性的值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            string currentValue;
-            if (base.HasStringValue(value, out currentValue))
+            if (string.IsNullOrEmpty(value))
             {
-                return Regex.IsMatch(currentValue, @"^\w+(\.\w*)*@\w+\.\w+$");
+                return true;
             }
-            return true;
+            return Regex.IsMatch(value, @"^\w+(\.\w*)*@\w+\.\w+$");
         }
     }
 }

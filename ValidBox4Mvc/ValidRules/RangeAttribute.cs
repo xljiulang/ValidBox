@@ -78,12 +78,17 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>       
         /// <param name="value">属性值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            double currentValue = 0d;
-            if (double.TryParse(value.ToString(), out currentValue))
+            if (string.IsNullOrEmpty(value))
             {
-                return currentValue >= this.MinValue && currentValue <= this.MaxValue;
+                return true;
+            }
+
+            double number = 0d;
+            if (double.TryParse(value, out number))
+            {
+                return number >= this.MinValue && number <= this.MaxValue;
             }
             return false;
         }

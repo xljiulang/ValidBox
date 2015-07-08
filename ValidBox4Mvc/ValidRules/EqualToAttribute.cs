@@ -42,24 +42,24 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>       
         /// <param name="value">属性的值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            string currentValue;
-            if (base.HasStringValue(value, out currentValue))
+            if (string.IsNullOrEmpty(value))
             {
-                var targetProperty = this.ValidationContext.ObjectType.GetProperty(this.TargetId, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-                if (targetProperty == null)
-                {
-                    return false;
-                }
-                var tagrgetValue = targetProperty.GetValue(this.ValidationContext.ObjectInstance, null);
-                if (tagrgetValue == null)
-                {
-                    return false;
-                }
-                return currentValue == tagrgetValue.ToString();
+                return true;
             }
-            return true;
+
+            var targetProperty = this.ValidationContext.ObjectType.GetProperty(this.TargetId, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+            if (targetProperty == null)
+            {
+                return false;
+            }
+            var tagrgetValue = targetProperty.GetValue(this.ValidationContext.ObjectInstance, null);
+            if (tagrgetValue == null)
+            {
+                return false;
+            }
+            return value == tagrgetValue.ToString();
         }
     }
 }

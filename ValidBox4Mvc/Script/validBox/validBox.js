@@ -247,10 +247,11 @@
         }).on("mouseleave blur", seletor, function () {
             var self = $(this);
             if (self.hasClass("valid-error")) hideError(self, false);
+        }).on("submit", "form", function (e) {
+            $(this).validBox(function (r) { if (!r) e.preventDefault(); });
         }).on("click", "[type=submit]", function (e) {
-            $(this).parents("form").validBox(function (r) {
-                if (!r) e.preventDefault();
-            });
+            e.preventDefault();
+            $(this).parents("form").submit();
         });
     };
 

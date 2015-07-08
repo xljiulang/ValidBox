@@ -43,9 +43,14 @@ namespace ValidBox4Mvc.ValidRules
         /// </summary>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public override bool IsValid(object value)
+        protected override bool IsValid(string value)
         {
-            var values = value.ToString().Split('.');
+            if (string.IsNullOrEmpty(value))
+            {
+                return true;
+            }
+
+            var values = value.Split('.');
             if (this.Max > 0 && values.Length > 0)
             {
                 return values.Last().Length <= Max;

@@ -56,12 +56,22 @@ namespace ValidBox4Mvc
         }
 
         /// <summary>
-        /// 根据当前的验证特性来验证指定的值
-        /// 默认返回true
+        /// 返回调用了bool IsValid(string value)方法的结果    
         /// </summary>
         /// <param name="value">值</param>
         /// <returns></returns>
         public override bool IsValid(object value)
+        {
+            return this.IsValid(value == null ? null : value.ToString());
+        }
+
+        /// <summary>
+        /// 根据当前的验证特性来验证指定的值
+        /// 默认返回true
+        /// </summary>
+        /// <param name="value">字符串值</param>
+        /// <returns></returns>
+        protected virtual bool IsValid(string value)
         {
             return true;
         }
@@ -74,18 +84,6 @@ namespace ValidBox4Mvc
         public override string FormatErrorMessage(string name)
         {
             return this.ErrorMessage;
-        }
-
-        /// <summary>
-        /// 判断字段是否有值
-        /// </summary>
-        /// <param name="relateValue">属性值</param>
-        /// <param name="value">输出值</param>
-        /// <returns></returns>
-        protected bool HasStringValue(object relateValue, out string value)
-        {
-            value = relateValue == null ? null : relateValue.ToString();
-            return string.IsNullOrEmpty(value) == false;
-        }
+        } 
     }
 }

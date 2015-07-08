@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidBox4Mvc", "ValidBox4Mvc\ValidBox4Mvc.csproj", "{19159869-4E85-4F09-BCFE-C44B391BF937}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidBox4AspNet", "ValidBox4AspNet\ValidBox4AspNet.csproj", "{6248DCA2-70D6-4110-959E-BF4E1B8A159C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{19159869-4E85-4F09-BCFE-C44B391BF937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19159869-4E85-4F09-BCFE-C44B391BF937}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19159869-4E85-4F09-BCFE-C44B391BF937}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

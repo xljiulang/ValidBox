@@ -1,0 +1,41 @@
+﻿.valid-error {
+    background: url('images/valid_error.png') no-repeat right center;
+}
+
+input.valid-error, select.valid-error, textarea.valid-error {
+    border: 1px solid #E64A46;
+}
+
+    input.valid-error:hover, select.valid-error:hover, textarea.valid-error:hover {
+        border: 1px solid #e9322d;
+    }
+
+div.validbox-tip {
+    position: absolute;
+    width: 200px;
+    height: auto;
+    z-index: 9900000;   
+}
+
+.validbox-tip span {
+    display: inline-block;
+    position: absolute;
+}
+
+.validbox-tip .m {
+    left: 9px;
+    padding: 2px 5px;
+    border: 1px solid #E1644F;
+    background: #F7F1F2;
+    z-index: 9900001;
+    font-size: 11px;
+    border-radius: 2px;
+}
+
+.validbox-tip .p {
+    background: url('images/valid_pointer.png') no-repeat left top;
+    width: 10px;
+    height: 18px;
+    left: 1px;
+    z-index: 9900002;
+}

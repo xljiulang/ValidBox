@@ -49,8 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extends\ControlExtend.cs" />
+    <Compile Include="Extends\ControlValidExtend.cs" />
     <Compile Include="Extends\ValidBoxExtend.cs" />
+    <Compile Include="Extends\ControlHelperExtend.cs" />
     <Compile Include="IValidRule.cs" />
     <Compile Include="ValidRules\EmailRule.cs" />
     <Compile Include="ValidRules\EqualToRule.cs" />

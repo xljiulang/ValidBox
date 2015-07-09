@@ -10,9 +10,9 @@ using ValidBox4AspNet;
 namespace System.Web
 {
     /// <summary>
-    /// Html控件扩展
+    /// 提供对控件验证扩展
     /// </summary>
-    public static partial class ControlExtend
+    public static partial class ControlValidExtend
     {
         /// <summary>
         /// 生成控件的前面验证规则

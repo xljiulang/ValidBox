@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extends\HtmlControlExtend.cs" />
+    <Compile Include="Extends\ControlExtend.cs" />
     <Compile Include="Extends\ValidBoxExtend.cs" />
     <Compile Include="IValidRule.cs" />
     <Compile Include="ValidRules\EmailRule.cs" />

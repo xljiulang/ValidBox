@@ -30,7 +30,7 @@ namespace ValidBox4AspNet
         {
             get
             {
-                var validType = Regex.Replace(this.GetType().Name, "Rule$", string.Empty);
+                var validType = Regex.Replace(this.GetType().Name, "Rule$", string.Empty, RegexOptions.IgnoreCase);
                 return char.ToLower(validType.First()).ToString() + new string(validType.Skip(1).ToArray());
             }
         }

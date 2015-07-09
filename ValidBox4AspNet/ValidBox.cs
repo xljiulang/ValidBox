@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace ValidBox4AspNet
 {
@@ -19,7 +21,7 @@ namespace ValidBox4AspNet
         /// <summary>
         /// 关联的控件
         /// </summary>
-        private HtmlControl ctrl;
+        private Control ctrl;
 
         /// <summary>
         /// 初始时消息
@@ -90,10 +92,16 @@ namespace ValidBox4AspNet
         /// </summary>
         public void Apply()
         {
+            var ctrlAttr = this.ctrl.GetType().GetProperty("Attributes").GetValue(this.ctrl, null) as AttributeCollection;
+            if (ctrlAttr == null)
+            {
+                return;
+            }
+
             var attributes = this.AsHtmlAttribute();
             foreach (var kv in attributes)
             {
-                this.ctrl.Attributes.Add(kv.Key, kv.Value.ToString());
+                ctrlAttr.Add(kv.Key, kv.Value.ToString());
             }
             this.ctrl.Page.Items[this.ctrl] = this.validRuleList;
         }
@@ -103,7 +111,7 @@ namespace ValidBox4AspNet
         /// </summary>       
         /// <param name="ctrl">要绑定的控件</param>
         /// <returns></returns>
-        public static ValidBox Empty(HtmlControl ctrl)
+        public static ValidBox Empty(Control ctrl)
         {
             return new ValidBox { ctrl = ctrl };
         }
@@ -114,7 +122,7 @@ namespace ValidBox4AspNet
         /// <param name="ctrl">要绑定的控件</param>
         /// <param name="message">初始化提示消息</param>
         /// <returns></returns>
-        public static ValidBox Empty(HtmlControl ctrl, string message)
+        public static ValidBox Empty(Control ctrl, string message)
         {
             return new ValidBox() { ctrl = ctrl, message = message };
         }

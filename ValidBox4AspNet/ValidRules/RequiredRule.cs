@@ -35,7 +35,7 @@ namespace ValidBox4AspNet.ValidRules
         /// <returns></returns>
         public override bool IsValid(string value)
         {
-            return string.IsNullOrEmpty(value) == false;
+            return value != null && value.Length == value.Trim().Length;
         }
     }
 }

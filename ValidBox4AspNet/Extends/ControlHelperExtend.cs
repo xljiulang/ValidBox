@@ -5,6 +5,7 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using ValidBox4AspNet.ModelBuilder;
 
 namespace System.Web
 {
@@ -56,6 +57,12 @@ namespace System.Web
                 return new KeyValuePair<bool, string>(true, select.Value);
             }
 
+            var hidden = ctrl as HiddenField;
+            if (hidden != null)
+            {
+                return new KeyValuePair<bool, string>(true, hidden.Value);
+            }
+
             var textBox = ctrl as TextBox;
             if (textBox != null)
             {
@@ -67,45 +74,67 @@ namespace System.Web
             {
                 return new KeyValuePair<bool, string>(true, dropdownList.SelectedValue);
             }
+
             return new KeyValuePair<bool, string>(false, null);
         }
 
         /// <summary>
-        /// 尝试将表单上的控件值更新到模型
-        /// 要求表单上控件ID和模型的属性名相同
+        /// 将表单上的控件值更新到模型
+        /// </summary>
+        /// <typeparam name="T">模型类型</typeparam>
+        /// <param name="form">表单</param>
+        /// <param name="model">模型实例</param>          
+        /// <returns></returns>
+        public static bool TryUpdateModel<T>(this HtmlForm form, T model)
+        {
+            string error;
+            return form.TryUpdateModel<T>(model, out error);
+        }
+
+        /// <summary>
+        /// 将表单上的控件值更新到模型
         /// </summary>
         /// <typeparam name="T">模型类型</typeparam>
         /// <param name="form">表单</param>
         /// <param name="model">模型实例</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="error">错误消息</param>         
         /// <returns></returns>
-        [Obsolete("此方法还没有开发完成", false)]
-        public static bool TryUpdateModel<T>(this HtmlForm form, T model)
+        public static bool TryUpdateModel<T>(this HtmlForm form, T model, out string error)
+        {
+            try
+            {
+                form.UpdateModel<T>(model);
+                error = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 将表单上的控件值更新到模型     
+        /// </summary>
+        /// <typeparam name="T">模型类型</typeparam>
+        /// <param name="form">表单</param>
+        /// <param name="model">模型实例</param>       
+        /// <exception cref="ArgumentNullException"></exception>            
+        public static void UpdateModel<T>(this HtmlForm form, T model)
         {
             if (model == null)
             {
                 throw new ArgumentNullException();
             }
 
-            var ctrls = form.Controls.Cast<Control>();
-            foreach (var ctrl in ctrls)
-            {
-                var kv = GetControlValueInternal(ctrl);
-                if (kv.Key == false)
-                {
-                    continue;
-                }
+            var keyValues = form.Controls
+                .Cast<Control>()
+                .Select(item => new { item.ID, Value = GetControlValueInternal(item) })
+                .Where(item => item.Value.Key)
+                .ToDictionary(k => k.ID, v => v.Value.Value, StringComparer.OrdinalIgnoreCase);
 
-                var fieldName = ctrl.ID;
-                var property = typeof(T).GetProperty(fieldName);
-
-                if (property != null)
-                {
-                    property.SetValue(model, kv.Value, null);
-                }
-            }
-
-            return true;
+            Converter.UpdateModel<T>(model, keyValues);
         }
     }
 }

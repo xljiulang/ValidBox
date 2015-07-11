@@ -28,6 +28,10 @@ namespace ValidBox4AspNet.ValidRules
         /// <returns></returns>
         public override bool IsValid(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return true;
+            }
             return !base.IsValid(value);
         }
     }

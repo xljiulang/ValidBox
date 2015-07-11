@@ -53,6 +53,8 @@
     <Compile Include="Extends\ValidBoxExtend.cs" />
     <Compile Include="Extends\ControlHelperExtend.cs" />
     <Compile Include="IValidRule.cs" />
+    <Compile Include="ModelBuilder\Converter.cs" />
+    <Compile Include="ModelBuilder\Property.cs" />
     <Compile Include="ValidRules\EmailRule.cs" />
     <Compile Include="ValidRules\EqualToRule.cs" />
     <Compile Include="ValidRules\LengthRule.cs" />

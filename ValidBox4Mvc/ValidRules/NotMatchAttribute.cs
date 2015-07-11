@@ -29,6 +29,10 @@ namespace ValidBox4Mvc.ValidRules
         /// <returns></returns>
         protected override bool IsValid(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return true;
+            }
             return !base.IsValid(value);
         }
     }

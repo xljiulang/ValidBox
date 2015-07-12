@@ -68,7 +68,7 @@ namespace ValidBox4AspNet.ModelBuilder
 
             if (targetType.IsEnum == true)
             {
-                return Enum.Parse(targetType, value);
+                return Enum.Parse(targetType, value, true);
             }
 
             if (typeof(IConvertible).IsAssignableFrom(targetType) == true)

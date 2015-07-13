@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -20,7 +22,7 @@ namespace System.Web
         /// <param name="ctrl">控件</param>
         /// <param name="dataSource">数据源</param>
         /// <param name="textField">文本字段名</param>
-        /// <param name="valueField">键值字段名</param>
+        /// <param name="valueField">键字段名</param>
         /// <returns>返回控件自身</returns>
         public static DropDownList BindData(this DropDownList ctrl, IEnumerable<object> dataSource, string textField, string valueField)
         {
@@ -29,6 +31,57 @@ namespace System.Web
             ctrl.DataValueField = valueField;
             ctrl.DataBind();
             return ctrl;
+        }
+
+        /// <summary>
+        /// 获取表达式对应的属性
+        /// </summary>
+        /// <typeparam name="T">Model类型</typeparam>
+        /// <typeparam name="TKey">键</typeparam>      
+        /// <param name="keySelector">属性选择表达式</param>
+        /// <returns></returns>
+        private static PropertyInfo GetExpressionProperty<T, TKey>(Expression<Func<T, TKey>> keySelector)
+        {
+            if (keySelector == null)
+            {
+                throw new ArgumentNullException("keySelector");
+            }
+
+            var body = keySelector.Body as MemberExpression;
+            if (body == null)
+            {
+                throw new ArgumentException("表达式必须为MemberExpression", "keySelector");
+            }
+
+            if (body.Member.DeclaringType.IsAssignableFrom(typeof(T)) == false || body.Expression.NodeType != ExpressionType.Parameter)
+            {
+                throw new ArgumentException("无法解析的表达式", "keySelector");
+            }
+
+            var property = body.Member as PropertyInfo;
+            if (property == null)
+            {
+                throw new ArgumentException("表达式选择的字段不是属性", "keySelector");
+            }
+            return property;
+        }
+
+        /// <summary>
+        /// 绑定数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TText"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ctrl">控件</param>
+        /// <param name="dataSource">数据源</param>
+        /// <param name="textField">文本字段</param>
+        /// <param name="valueField">键字段</param>
+        /// <returns></returns>
+        public static DropDownList BindData<T, TText, TValue>(this DropDownList ctrl, IEnumerable<T> dataSource, Expression<Func<T, TText>> textField, Expression<Func<T, TValue>> valueField)
+        {
+            var textFieldName = GetExpressionProperty(textField).Name;
+            var valueFieldName = GetExpressionProperty(valueField).Name;
+            return ctrl.BindData(dataSource.Cast<object>(), textFieldName, valueFieldName);
         }
 
 

@@ -23,7 +23,7 @@ namespace ValidBox4AspNet.ModelBuilder
             {
                 return;
             }
-            
+
             var properties = Property.GetProperties(typeof(T));
             foreach (var property in properties)
             {
@@ -31,7 +31,12 @@ namespace ValidBox4AspNet.ModelBuilder
                 if (keyValues.TryGetValue(property.Name, out value) == true)
                 {
                     var targetValue = CastToType(property.PropertyType, value);
-                    property.Set(model, targetValue);
+                    var currentValue = property.Get(model);
+
+                    if (currentValue == null || targetValue.Equals(currentValue) == false)
+                    {
+                        property.Set(model, targetValue);
+                    }
                 }
             }
         }

@@ -92,6 +92,12 @@ namespace System.Web
         /// <returns></returns>
         private static KeyValuePair<bool, string> GetControlValueInternal(Control ctrl)
         {
+            var ckBox = ctrl as HtmlInputCheckBox;
+            if (ckBox != null)
+            {
+                return new KeyValuePair<bool, string>(true, ckBox.Checked.ToString());
+            }
+
             var input = ctrl as HtmlInputControl;
             if (input != null)
             {
@@ -108,6 +114,12 @@ namespace System.Web
             if (select != null)
             {
                 return new KeyValuePair<bool, string>(true, select.Value);
+            }
+
+            var ck = ctrl as CheckBox;
+            if (ck != null)
+            {
+                return new KeyValuePair<bool, string>(true, ck.Checked.ToString());
             }
 
             var hidden = ctrl as HiddenField;
@@ -181,8 +193,7 @@ namespace System.Web
                 throw new ArgumentNullException();
             }
 
-            var keyValues = form.Controls
-                .Cast<Control>()
+            var keyValues = form.GetAllControls()             
                 .Select(item => new { item.ID, Value = GetControlValueInternal(item) })
                 .Where(item => item.Value.Key)
                 .ToDictionary(k => k.ID, v => v.Value.Value, StringComparer.OrdinalIgnoreCase);

@@ -23,15 +23,8 @@ namespace ValidBox4AspNet.ModelBuilder
             {
                 return;
             }
-
-            Func<Type, IEnumerable<PropertyInfo>> func = type =>
-                type.GetProperties().Where(item =>
-                    item.PropertyType == typeof(Guid) ||
-                    item.PropertyType.IsEnum == true ||
-                    typeof(IConvertible).IsAssignableFrom(item.PropertyType)
-                    );
-
-            var properties = Property.GetOrAddProperties(typeof(T), func);
+            
+            var properties = Property.GetProperties(typeof(T));
             foreach (var property in properties)
             {
                 string value;

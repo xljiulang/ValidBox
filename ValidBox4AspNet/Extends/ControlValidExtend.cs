@@ -262,6 +262,23 @@ namespace System.Web
         }
 
         /// <summary>
+        /// 获取控件的下的所有控件
+        /// </summary>
+        /// <param name="control"></param>
+        /// <returns></returns>
+        internal static IEnumerable<Control> GetAllControls(this Control control)
+        {
+            foreach (Control item in control.Controls)
+            {
+                yield return item;
+                foreach (var inner in GetAllControls(item))
+                {
+                    yield return inner;
+                }
+            }
+        }
+
+        /// <summary>
         /// 后台验证表单下控件输入是否通过
         /// 如果失败则将提示信息输出到UI
         /// </summary>
@@ -269,7 +286,7 @@ namespace System.Web
         /// <returns></returns>
         public static bool IsValid(this HtmlForm form)
         {
-            var ctrls = form.Controls.Cast<Control>();
+            var ctrls = form.GetAllControls();
             foreach (var ctrl in ctrls)
             {
                 var input = ctrl as HtmlInputControl;

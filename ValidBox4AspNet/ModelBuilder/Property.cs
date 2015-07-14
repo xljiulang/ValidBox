@@ -26,11 +26,10 @@ namespace ValidBox4AspNet.ModelBuilder
         /// <summary>
         /// 获取类型的属性
         /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="propeties">属性获取委托</param>
+        /// <param name="type">类型</param>       
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public static Property[] GetOrAddProperties(Type type, Func<Type, IEnumerable<PropertyInfo>> propeties)
+        public static Property[] GetProperties(Type type)
         {
             if (type == null)
             {
@@ -41,7 +40,14 @@ namespace ValidBox4AspNet.ModelBuilder
             {
                 if (cached.ContainsKey(type) == false)
                 {
-                    return cached[type] = propeties(type).Select(item => new Property(item)).ToArray();
+                    var propeties = type
+                        .GetProperties()
+                        .Where(item => item.GetAccessors().Length == 2)
+                        .Where(item => item.PropertyType == typeof(Guid) || item.PropertyType.IsEnum == true || typeof(IConvertible).IsAssignableFrom(item.PropertyType))
+                        .Select(item => new Property(item))
+                        .ToArray();
+
+                    cached[type] = propeties;
                 }
                 return cached[type];
             }

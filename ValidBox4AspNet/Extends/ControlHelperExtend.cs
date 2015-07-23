@@ -88,7 +88,7 @@ namespace System.Web
             ctrl.DataBind();
             if (string.IsNullOrEmpty(labelName) == false)
             {
-                ctrl.Items.Add(new ListItem(labelName));
+                ctrl.Items.Insert(0, new ListItem(labelName, string.Empty));
             }
             return ctrl;
         }

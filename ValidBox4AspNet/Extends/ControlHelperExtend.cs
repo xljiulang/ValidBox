@@ -14,25 +14,8 @@ namespace System.Web
     /// <summary>
     /// 提供对控件使用扩展
     /// </summary>
-    public static class ControlHelperExtend
+    public static partial class ControlHelper
     {
-        /// <summary>
-        /// 绑定数据
-        /// </summary>
-        /// <param name="ctrl">控件</param>
-        /// <param name="dataSource">数据源</param>
-        /// <param name="textField">文本字段名</param>
-        /// <param name="valueField">键字段名</param>
-        /// <returns>返回控件自身</returns>
-        public static DropDownList BindData(this DropDownList ctrl, IEnumerable<object> dataSource, string textField, string valueField)
-        {
-            ctrl.DataSource = dataSource;
-            ctrl.DataTextField = textField;
-            ctrl.DataValueField = valueField;
-            ctrl.DataBind();
-            return ctrl;
-        }
-
         /// <summary>
         /// 获取表达式对应的属性
         /// </summary>
@@ -40,7 +23,7 @@ namespace System.Web
         /// <typeparam name="TKey">键</typeparam>      
         /// <param name="keySelector">属性选择表达式</param>
         /// <returns></returns>
-        private static PropertyInfo GetExpressionProperty<T, TKey>(Expression<Func<T, TKey>> keySelector)
+        public static PropertyInfo GetExpressionProperty<T, TKey>(Expression<Func<T, TKey>> keySelector)
         {
             if (keySelector == null)
             {
@@ -79,9 +62,35 @@ namespace System.Web
         /// <returns></returns>
         public static DropDownList BindData<T, TText, TValue>(this DropDownList ctrl, IEnumerable<T> dataSource, Expression<Func<T, TText>> textField, Expression<Func<T, TValue>> valueField)
         {
+            return ctrl.BindData(dataSource, textField, valueField, null);
+        }
+
+        /// <summary>
+        /// 绑定数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TText"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="ctrl">控件</param>
+        /// <param name="dataSource">数据源</param>
+        /// <param name="textField">文本字段</param>
+        /// <param name="valueField">键字段</param>
+        /// <param name="labelName">显示的标签名</param>
+        /// <returns></returns>
+        public static DropDownList BindData<T, TText, TValue>(this DropDownList ctrl, IEnumerable<T> dataSource, Expression<Func<T, TText>> textField, Expression<Func<T, TValue>> valueField, string labelName)
+        {
             var textFieldName = GetExpressionProperty(textField).Name;
             var valueFieldName = GetExpressionProperty(valueField).Name;
-            return ctrl.BindData(dataSource.Cast<object>(), textFieldName, valueFieldName);
+
+            ctrl.DataSource = dataSource;
+            ctrl.DataTextField = GetExpressionProperty(textField).Name;
+            ctrl.DataValueField = GetExpressionProperty(valueField).Name;
+            ctrl.DataBind();
+            if (string.IsNullOrEmpty(labelName) == false)
+            {
+                ctrl.Items.Add(new ListItem(labelName));
+            }
+            return ctrl;
         }
 
 
@@ -90,7 +99,7 @@ namespace System.Web
         /// </summary>
         /// <param name="ctrl">控件</param>
         /// <returns></returns>
-        private static KeyValuePair<bool, string> GetControlValueInternal(Control ctrl)
+        public static KeyValuePair<bool, string> GetControlValue(Control ctrl)
         {
             var ckBox = ctrl as HtmlInputCheckBox;
             if (ckBox != null)
@@ -193,8 +202,8 @@ namespace System.Web
                 throw new ArgumentNullException();
             }
 
-            var keyValues = form.GetAllControls()             
-                .Select(item => new { item.ID, Value = GetControlValueInternal(item) })
+            var keyValues = form.GetAllControls()
+                .Select(item => new { item.ID, Value = GetControlValue(item) })
                 .Where(item => item.Value.Key)
                 .ToDictionary(k => k.ID, v => v.Value.Value, StringComparer.OrdinalIgnoreCase);
 

@@ -12,7 +12,7 @@ namespace System.Web
     /// <summary>
     /// 提供对控件验证扩展
     /// </summary>
-    public static partial class ControlValidExtend
+    public static partial class ControlValid
     {
         /// <summary>
         /// 生成控件的前面验证规则
@@ -266,7 +266,7 @@ namespace System.Web
         /// </summary>
         /// <param name="control"></param>
         /// <returns></returns>
-        internal static IEnumerable<Control> GetAllControls(this Control control)
+        public static IEnumerable<Control> GetAllControls(this Control control)
         {
             foreach (Control item in control.Controls)
             {

@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidBox4Mvc", "ValidBox4Mv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidBox4AspNet", "ValidBox4AspNet\ValidBox4AspNet.csproj", "{6248DCA2-70D6-4110-959E-BF4E1B8A159C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFormDemo", "WebFormDemo\WebFormDemo.csproj", "{21D4D18A-1098-4E0D-8658-CE10EC05D6CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6248DCA2-70D6-4110-959E-BF4E1B8A159C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21D4D18A-1098-4E0D-8658-CE10EC05D6CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21D4D18A-1098-4E0D-8658-CE10EC05D6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21D4D18A-1098-4E0D-8658-CE10EC05D6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21D4D18A-1098-4E0D-8658-CE10EC05D6CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

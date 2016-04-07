@@ -30,12 +30,7 @@ namespace ValidBox4Mvc
         /// 必须输入且无输入时提示语
         /// </summary>
         private string requiredMessage;
-
-        /// <summary>
-        /// Html属性缓存
-        /// </summary>
-        private IDictionary<string, object> attributeCached;
-
+        
         /// <summary>
         /// 验证规则
         /// </summary>
@@ -54,11 +49,6 @@ namespace ValidBox4Mvc
         /// <returns></returns>
         public IDictionary<string, object> AsHtmlAttribute()
         {
-            if (this.attributeCached != null)
-            {
-                return this.attributeCached;
-            }
-
             var attributes = new Dictionary<string, object>();
             attributes.Add("class", "validBox");
 
@@ -83,7 +73,6 @@ namespace ValidBox4Mvc
                 attributes.Add("message", this.message);
             }
 
-            this.attributeCached = attributes;
             return attributes;
         }
 
